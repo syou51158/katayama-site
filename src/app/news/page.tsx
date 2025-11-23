@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { Calendar, Clock, ArrowRight } from 'lucide-react';
-import { getPosts } from '@/lib/supabase';
+import { getNews } from '@/lib/supabase';
 
 export default async function NewsPage() {
-  const posts = await getPosts();
+  const posts = await getNews();
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -29,9 +29,9 @@ export default async function NewsPage() {
                   className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
                 >
                   <div className="aspect-video bg-gray-200 relative overflow-hidden">
-                    {post.cover_url ? (
+                    {post.featured_image ? (
                       <img
-                        src={post.cover_url || ''}
+                        src={post.featured_image || ''}
                         alt={post.title}
                         className="w-full h-full object-cover"
                       />
@@ -49,21 +49,21 @@ export default async function NewsPage() {
                   <div className="p-6">
                     <div className="flex items-center text-sm text-gray-500 mb-3">
                       <Calendar className="h-4 w-4 mr-2 text-[#B79B6B]" />
-                      {post.published_at ? new Date(post.published_at).toLocaleDateString('ja-JP') : '日付不明'}
+                      {post.published_date ? new Date(post.published_date).toLocaleDateString('ja-JP') : '日付不明'}
                       <Clock className="h-4 w-4 ml-4 mr-2 text-[#B79B6B]" />
                       5分で読める
                     </div>
                     <h2 className="text-xl font-bold text-[#1D2E45] mb-3 font-serif hover:text-[#B79B6B] transition-colors">
-                      <Link href={`/news/${post.slug}`}>
+                      <span>
                         {post.title}
-                      </Link>
+                      </span>
                     </h2>
                     <p className="text-gray-600 mb-4 text-sm leading-relaxed">
-                      {post.body_md ? post.body_md.substring(0, 100) + '...' : '記事の内容を読むには続きをクリックしてください。'}
+                      {post.excerpt ? post.excerpt : (post.content ? post.content.substring(0, 100) + '...' : '記事の内容を読むには続きをご覧ください。')}
                     </p>
                     <div className="mt-6">
                       <Link
-                        href={`/news/${post.slug}`}
+                        href="/news"
                         className="inline-flex items-center text-[#1D2E45] hover:text-[#B79B6B] font-medium transition-colors"
                       >
                         続きを読む

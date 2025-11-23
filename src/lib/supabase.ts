@@ -33,6 +33,19 @@ export interface Post {
   updated_at: string
 }
 
+export interface News {
+  id: string
+  title: string
+  content: string | null
+  excerpt: string | null
+  category: string | null
+  featured_image: string | null
+  published_date: string | null
+  status: 'draft' | 'published' | 'archived'
+  created_at?: string | null
+  updated_at?: string | null
+}
+
 export interface Inquiry {
   id: string
   created_at: string
@@ -133,6 +146,27 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
   }
 
   return data
+}
+
+export async function getNews(limit?: number): Promise<News[]> {
+  let query = supabase
+    .from('news')
+    .select('*')
+    .eq('status', 'published')
+    .order('published_date', { ascending: false })
+
+  if (limit) {
+    query = query.limit(limit)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Error fetching news:', error)
+    return []
+  }
+
+  return data || []
 }
 
 export async function getPageBySlug(slug: string): Promise<Page | null> {

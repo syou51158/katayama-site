@@ -61,6 +61,9 @@ export function OptimizedImage({
 
   // Generate blur data URL for placeholder
   const generateBlurDataURL = (w: number, h: number) => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return undefined as unknown as string
+    }
     const canvas = document.createElement('canvas')
     canvas.width = w
     canvas.height = h
@@ -102,7 +105,7 @@ export function OptimizedImage({
         sizes={sizes}
         quality={quality}
         placeholder={placeholder}
-        blurDataURL={blurDataURL || (width && height ? generateBlurDataURL(width, height) : undefined)}
+        blurDataURL={blurDataURL || (typeof window !== 'undefined' && width && height ? generateBlurDataURL(width, height) : undefined)}
         onLoad={handleLoad}
         onError={handleError}
       />
